@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import maplibregl from 'maplibre-gl';
+import maplibregl, { LayerSpecification, VectorSourceSpecification } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './Map.css';
 
@@ -92,6 +92,33 @@ useEffect(() => {
 
 
   map.addControl(new maplibregl.NavigationControl(), 'top-right');
+  
+
+  const source: VectorSourceSpecification =  {
+    type: 'vector',
+    url: 'https://tiles.planninglabs.nyc/data/v3/{z}/{x}/{y}.pbf',
+    minzoom: 0,
+    maxzoom: 22
+  };
+  map.addLayer({
+    id: 'points-of-interest',
+    source,
+    'source-layer': 'poi_label',
+    type: 'circle',
+  });
+  
+  // map.addLayer(layer: (Omit<LayerSpecification, "source"> & {source?: string | SourceSpecification}))
+
+  // function layerSource(tileurl: string) {
+  //   return {
+  //     "type": "vector",
+  //     "tiles": [tileurl],
+  //     "minzoom": 0,
+  //     "maxzoom": 22
+  //   }
+  // };
+  // map.addSource('gdx2.files', layerSource('https://tiles.planninglabs.nyc/data/v3/{z}/{x}/{y}.pbf'));
+
 
   // new maplibregl.Marker({color: "#FF0000"})
   //   .setLngLat([139.7525,35.6846])
