@@ -14,6 +14,37 @@ export default function Map() {
 
 
 useEffect(() => {
+
+// let mapConfig = {    
+//     'container': 'map',
+//     'hash': true,
+//     'style': {
+//       'version': 8,
+//       'sources': {
+//         'carto-light': {
+//           'type': 'raster',
+//           'tiles': [
+//             "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
+//             "https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
+//             "https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
+//             "https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"
+//           ]
+//         }
+//       },
+//       'layers': [{      
+//         'id': 'carto-light-layer',
+//         'source': 'carto-light',          
+//         'type': 'raster',
+//         'minzoom': 0,
+//         'maxzoom': 22
+//       }]
+//     },
+//     'center': [-73.9021,40.786],
+//     'zoom': 9,
+//     'pitch': 20        
+// };
+
+
   // if (map.current) return; // stops map from intializing more than once
   // map.current = new maplibregl.Map({
   //     container: mapContainer.current!,
@@ -22,12 +53,42 @@ useEffect(() => {
   //     zoom: zoom
   //     });
 
-  const map = new maplibregl.Map({
-  container: 'map',
-  style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${API_KEY}`,
-  center: [lng, lat],
-  zoom: zoom
-  });
+  // const map = new maplibregl.Map({
+  // container: 'map',
+  // style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${API_KEY}`,
+  // center: [lng, lat],
+  // zoom: zoom
+  // });
+
+  const map = new maplibregl.Map({    
+    'container': 'map',
+    'hash': true,
+    'style': {
+      'version': 8,
+      'sources': {
+        'carto-light': {
+          'type': 'raster',
+          'tiles': [
+            "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
+            "https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
+            "https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
+            "https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"
+          ]
+        }
+      },
+      'layers': [{      
+        'id': 'carto-light-layer',
+        'source': 'carto-light',          
+        'type': 'raster',
+        'minzoom': 0,
+        'maxzoom': 22
+      }]
+    },
+    'center': [-73.9021,40.786],
+    'zoom': 9,
+    'pitch': 20        
+}
+);
 
 
   map.addControl(new maplibregl.NavigationControl(), 'top-right');

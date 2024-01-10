@@ -1,0 +1,212 @@
+{
+    "id": "gdx2.file",
+    "schema": "gdx2",
+    "name": "file",
+    "description": "Файлы",
+    "properties": [
+        {
+            "name": "id",
+            "type": "int4",
+            "description": ""
+        },
+        {
+            "name": "f_root",
+            "type": "text",
+            "description": "Источник"
+        },
+        {
+            "name": "f_path",
+            "type": "text",
+            "description": "Полный путь к файлу"
+        },
+        {
+            "name": "f_folder",
+            "type": "text",
+            "description": "Папка с файлом"
+        },
+        {
+            "name": "f_name",
+            "type": "varchar",
+            "description": "Имя файла полное"
+        },
+        {
+            "name": "f_ext",
+            "type": "varchar",
+            "description": "Расширение"
+        },
+        {
+            "name": "f_size",
+            "type": "int8",
+            "description": "Размер"
+        },
+        {
+            "name": "f_ctime",
+            "type": "timestamp",
+            "description": "Дата создания"
+        },
+        {
+            "name": "f_mtime",
+            "type": "timestamp",
+            "description": "Дата модификации"
+        },
+        {
+            "name": "f_atime",
+            "type": "timestamp",
+            "description": "Дата доступа"
+        },
+        {
+            "name": "f_path_md5",
+            "type": "text",
+            "description": "Хеш пути"
+        },
+        {
+            "name": "f_text",
+            "type": "text",
+            "description": "Текст"
+        },
+        {
+            "name": "ngp",
+            "type": "varchar",
+            "description": "НГ Провинция"
+        },
+        {
+            "name": "ngo",
+            "type": "varchar",
+            "description": "НГ Область"
+        },
+        {
+            "name": "ngr",
+            "type": "varchar",
+            "description": "НГ Район"
+        },
+        {
+            "name": "field",
+            "type": "varchar",
+            "description": "Месторождение"
+        },
+        {
+            "name": "areaoil",
+            "type": "varchar",
+            "description": "Площадь"
+        },
+        {
+            "name": "lu",
+            "type": "varchar",
+            "description": "Лицензионный участок"
+        },
+        {
+            "name": "lu_num",
+            "type": "varchar",
+            "description": "Номер ЛУ"
+        },
+        {
+            "name": "well",
+            "type": "varchar",
+            "description": "Скважина"
+        },
+        {
+            "name": "lat",
+            "type": "float8",
+            "description": "Координаты - lat"
+        },
+        {
+            "name": "lon",
+            "type": "float8",
+            "description": "Координаты  - lon"
+        },
+        {
+            "name": "report_id",
+            "type": "int4",
+            "description": "Идентификатор отчета"
+        },
+        {
+            "name": "report_name",
+            "type": "text",
+            "description": "Имя отчета"
+        },
+        {
+            "name": "report_text",
+            "type": "text",
+            "description": "Текст отчета"
+        },
+        {
+            "name": "report_author",
+            "type": "text",
+            "description": "Автор отчета"
+        },
+        {
+            "name": "report_year",
+            "type": "int4",
+            "description": "Дата отчета"
+        },
+        {
+            "name": "report_tgf",
+            "type": "text",
+            "description": "ТГФ"
+        },
+        {
+            "name": "dog_zakaz",
+            "type": "text",
+            "description": "Договор"
+        },
+        {
+            "name": "dog_name",
+            "type": "text",
+            "description": "Название договора"
+        },
+        {
+            "name": "dog_num",
+            "type": "text",
+            "description": "Номер договора"
+        },
+        {
+            "name": "dog_date",
+            "type": "timestamp",
+            "description": "Дата договора"
+        },
+        {
+            "name": "dog_isp",
+            "type": "text",
+            "description": "Исполнитель"
+        },
+        {
+            "name": "dog_rep",
+            "type": "text",
+            "description": "Отчет по договору"
+        },
+        {
+            "name": "dog_prikaz",
+            "type": "text",
+            "description": "Приказ"
+        },
+        {
+            "name": "is_deleted",
+            "type": "bool",
+            "description": "Удален"
+        },
+        {
+            "name": "lastupdate",
+            "type": "timestamp",
+            "description": "Дата последнего обновления"
+        },
+        {
+            "name": "file_path_fts",
+            "type": "tsvector",
+            "description": ""
+        }
+    ],
+    "geometrytype": "Point",
+    "center": [
+        67.3348388671875,
+        62.61317825317383
+    ],
+    "bounds": [
+        51.95306396484375,
+        55.50762939453125,
+        82.71661376953125,
+        69.7187271118164
+    ],
+    "minzoom": 0,
+    "maxzoom": 22,
+    "tileurl": "https://tiles.planninglabs.nyc/data/v3/{z}/{x}/{y}.pbf"
+}
