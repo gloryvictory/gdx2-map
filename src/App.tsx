@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 
 import Navbar from './components/Navbar/Navbar';
-import Map from './components/Map/Map';
+import GlobalMap from './components/Map/gMap';
 
 
 function App() {
@@ -10,7 +10,9 @@ function App() {
     <div className="App">
     
       <Navbar/>
-      <Map/>
+
+      <GlobalMap/>
+
     </div>
   );
 }
