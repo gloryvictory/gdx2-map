@@ -3,6 +3,7 @@ import './App.css';
 
 import Navbar from './components/Navbar/Navbar';
 import GlobalMap from './components/Map/gMap';
+import MyButton from './components/Map/myButton/myButton';
 
 
 function App() {
@@ -10,7 +11,8 @@ function App() {
     <div className="App">
     
       <Navbar/>
-
+      <MyButton/>
+      
       <GlobalMap/>
 
     </div>
