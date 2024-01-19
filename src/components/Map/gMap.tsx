@@ -7,11 +7,13 @@ import maplibregl from 'maplibre-gl';
 import type {MapRef} from 'react-map-gl/maplibre';
 
 
+
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 import './gMap.css';
 
 import type {LayerProps, SourceProps} from 'react-map-gl';
+import MyButton from '../myButton/myButton';
 
 export const pointSource: SourceProps = {
 
@@ -71,48 +73,64 @@ export default function GlobalMap() {
     if (mapRef) {
       const map = mapRef.current
       console.log(map)
-      map?.on('mouseenter', 'gdx2.file', function (e) {
-      map.getCanvas().style.cursor = 'pointer';
 
+      // map?.flyTo({center: [-122.4, 37.8]});
+      
+      const popup = new maplibregl.Popup({
+        closeButton: false,
+        closeOnClick: false
+      });
+
+      map?.on('mouseenter', 'points-file', function (e) {
+      map.getCanvas().style.cursor = 'pointer';
+      
+    //   const coordinates = e?.features[0]?.geometry.coordinates.slice();
+    //   const description = e?.features[0]?.properties.description;
+    //   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    // }
+      
+    //   popup.setLngLat(coordinates).setHTML(description).addTo(map.getMap());
+    //   // console.log("fit!!!!!!!!")
+      console.log(e)
         // do something
       });
+
+      // reset cursor to default when user is no longer hovering over a clickable feature
+      map?.on('mouseleave', 'points-file', function (e) {
+        map.getCanvas().style.cursor = '';       
+        popup.remove();
+      })      
+
+
     }
 
     
   }, []);
 
+  function space(arg0: number): import("csstype").Property.MarginRight<string | number> | undefined {
+    throw new Error('Function not implemented.');
+  }
+
 // map.on('mouseenter', 'airport-data', function (e) {
 //   // Change the cursor style as a UI indicator.
 //   map.getCanvas().style.cursor = 'pointer';
-
 //   var coordinates = e.features[0].geometry.coordinates.slice()
-
 //   var description = "";
 //   for (const [key, value] of Object.entries(e.features[0].properties)) {
 //     description += `${key}: ${value} <br>`;
 //   }
-
-
-//   // Ensure that if the map is zoomed out such that multiple
-//   // copies of the feature are visible, the popup appears
-//   // over the copy being pointed to.
 //   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
 //       coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
 //   }
-
-//   // Populate the popup and set its coordinates
-//   // based on the feature found.
 //   popup.setLngLat(coordinates).setHTML(description).addTo(map);
 // });
 
-// map.on('mouseleave', 'airport-data', function () {
-//   map.getCanvas().style.cursor = '';
-//   popup.remove();
-// });
+
 
   return (
-  <div className="map-wrap">
-    <div id="map" className="map"></div>
+  
+    <div id="map" className="map">
     <MapProvider>
       <Map
         id="mymap"
@@ -124,26 +142,28 @@ export default function GlobalMap() {
         // ref={mapRef} 
         onLoad={onMapLoad}
         onMouseEnter={onMapLoad}
+        ref={mapRef}
         // mapStyle={DARK_MAP_STYLE}
       >
         <Source {...pointSource}   >
             <Layer {...pointLayer} />
         </Source>  
       
-        {showPopup && (
+        {/* {showPopup && (
         <Popup longitude={74.08} latitude={61.86}
           anchor="bottom"
           onClose={() => setShowPopup(false)}>
           You are here
-        </Popup>)}
+        </Popup>)} */}
 
-        <FullscreenControl />
-        <GeolocateControl />
-        <NavigationControl />
+        <FullscreenControl position="top-right" style={{ marginRight: 10 }} />
+        <GeolocateControl position="top-right" style={{ marginRight: 10 }}/>
+        <NavigationControl position="top-right" style={{ marginRight: 10 }}/>
         <ScaleControl />
         <AttributionControl customAttribution="Map design by me" />
-
+       
       </Map>     
+      {/* <MyButton/> */}
     </MapProvider>
     {/* <div ref='map' className="map" /> */}
   </div>
