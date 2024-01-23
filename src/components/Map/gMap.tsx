@@ -15,10 +15,13 @@ import './gMap.css';
 import type {LayerProps, SourceProps} from 'react-map-gl';
 import MyButton from '../myButton/myButton';
 
+
+// http://r48-vws03.zsniigg.local
 export const pointSource: SourceProps = {
 
   id:"gdx2.file",
   type:"vector",
+  // tiles:["http://r48-vws03.zsniigg.local:7800/gdx2.file/{z}/{x}/{y}.pbf"],
   tiles:["http://localhost:7800/gdx2.file/{z}/{x}/{y}.pbf"],
   minzoom: 0,
   maxzoom: 22,
@@ -42,11 +45,6 @@ export const pointLayer: LayerProps = {
     'circle-radius': 5
   }
 };
-
-var popup = new maplibregl.Popup({
-  closeButton: false,
-  closeOnClick: false
-});
 
 const LIGHT_MAP_STYLE = 'https://tiles.basemaps.cartocdn.com/gl/positron-gl-style/style.json';
 const DARK_MAP_STYLE = 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
@@ -77,13 +75,25 @@ export default function GlobalMap() {
       // map?.flyTo({center: [-122.4, 37.8]});
       
       const popup = new maplibregl.Popup({
-        closeButton: false,
-        closeOnClick: false
+        closeButton: true,
+        closeOnClick: false,
+        offset: 15
       });
 
       map?.on('mouseenter', 'points-file', function (e) {
-      map.getCanvas().style.cursor = 'pointer';
+        map.getCanvas().style.cursor = 'pointer';
       
+      const features = e?.features
+      // console.log(`features.length : ${features?.length}`)
+      if(features && features?.length){
+        console.log(features)
+        const lat = features[0]?.properties.lat
+        const lon = features[0]?.properties.lon
+        // console.log(lat)
+        // console.log(lon)
+        popup.setLngLat(e.lngLat.wrap()).setHTML(`<h1>Файлов: ${features?.length}</h1>`).addTo(map.getMap());
+
+      }
     //   const coordinates = e?.features[0]?.geometry.coordinates.slice();
     //   const description = e?.features[0]?.properties.description;
     //   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
@@ -131,7 +141,6 @@ export default function GlobalMap() {
   return (
   
     <div id="map" className="map">
-    <MapProvider>
       <Map
         id="mymap"
         initialViewState={initialValueLocation}
@@ -156,15 +165,14 @@ export default function GlobalMap() {
           You are here
         </Popup>)} */}
 
-        <FullscreenControl position="top-right" style={{ marginRight: 10 }} />
-        <GeolocateControl position="top-right" style={{ marginRight: 10 }}/>
-        <NavigationControl position="top-right" style={{ marginRight: 10 }}/>
+        <FullscreenControl  position="top-right" style={{ marginRight: 10 }} />
+        <GeolocateControl   position="top-right" style={{ marginRight: 10 }}/>
+        <NavigationControl  position="top-right" style={{ marginRight: 10 }}/>
         <ScaleControl />
-        <AttributionControl customAttribution="Map design by me" />
-       
+        <AttributionControl customAttribution="vzam" />
       </Map>     
-      {/* <MyButton/> */}
-    </MapProvider>
+      
+      <MyButton/>
     {/* <div ref='map' className="map" /> */}
   </div>
   );

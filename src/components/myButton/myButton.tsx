@@ -1,11 +1,22 @@
 import {useMap} from 'react-map-gl/maplibre';
+import { FloatButton } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
+
 
 export default function MyButton() {
-    const {mymap } = useMap();
+    const { mymap } = useMap();
     console.log(`mymap: ${mymap}`)
     const onClick = () => {
-    console.log(`mymap when click: ${mymap}`)    
-    mymap?.flyTo({center: [-122.4, 37.8]});
+      console.log(`mymap when click: ${mymap}`)    
+      mymap?.flyTo({center: [-122.4, 37.8]});
     };
-    return <button id="button" onClick={onClick}>Go</button>;
+    return (
+    <>
+      <FloatButton  onClick={onClick} icon={<QuestionCircleOutlined />} style={{ right: 24 }}/>
+    </>    
+        
+    )
+    
+    
 }
+

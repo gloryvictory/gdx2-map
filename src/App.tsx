@@ -4,6 +4,8 @@ import './App.css';
 import Navbar from './components/Navbar/Navbar';
 import GlobalMap from './components/Map/gMap';
 import MyButton from './components/myButton/myButton';
+import {MapProvider} from 'react-map-gl';
+
 
 
 function App() {
@@ -11,9 +13,11 @@ function App() {
     <div className="App">
     
       {/* <Navbar/> */}
-     
-      
+    <MapProvider>
       <GlobalMap/>
+    </MapProvider>
+      
+      
 
     </div>
   );
