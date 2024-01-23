@@ -12,7 +12,7 @@ export default function MyButton() {
     };
     return (
     <>
-      <FloatButton  onClick={onClick} icon={<QuestionCircleOutlined />} style={{ right: 24 }}/>
+      <FloatButton  onClick={onClick} icon={<QuestionCircleOutlined />}  tooltip={<div>Info</div>}/>
     </>    
         
     )
@@ -20,3 +20,4 @@ export default function MyButton() {
     
 }
 
+// style={{ right: 24 }}

@@ -1,22 +1,21 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 // import maplibregl, { AddLayerObject, LayerSpecification, MapOptions, NavigationOptions, VectorSourceSpecification } from 'maplibre-gl';
 // import Map, { Marker } from "react-map-gl/maplibre";
 import Map  from "react-map-gl/maplibre";
-import {Source, Layer, FullscreenControl, GeolocateControl, NavigationControl, ScaleControl, AttributionControl, Popup, MapProvider, useMap} from 'react-map-gl';
+import {Source, Layer, FullscreenControl, GeolocateControl, NavigationControl, ScaleControl, AttributionControl} from 'react-map-gl';
 import maplibregl from 'maplibre-gl';
 import type {MapRef} from 'react-map-gl/maplibre';
-
-
-
-import 'maplibre-gl/dist/maplibre-gl.css';
-
-import './gMap.css';
-
 import type {LayerProps, SourceProps} from 'react-map-gl';
 import MyButton from '../myButton/myButton';
 
 
-// http://r48-vws03.zsniigg.local
+import 'maplibre-gl/dist/maplibre-gl.css';
+import './gMap.css';
+import ButtonTable from '../ButtonTable/ButtonTable';
+import { FloatButton } from 'antd';
+import { CustomerServiceOutlined } from '@ant-design/icons';
+
+
 export const pointSource: SourceProps = {
 
   id:"gdx2.file",
@@ -170,9 +169,17 @@ export default function GlobalMap() {
         <NavigationControl  position="top-right" style={{ marginRight: 10 }}/>
         <ScaleControl />
         <AttributionControl customAttribution="vzam" />
-      </Map>     
+      </Map>    
       
-      <MyButton/>
+      <FloatButton.Group
+        open={true}
+        trigger="click"
+        style={{ right: 24 }}
+        icon={<CustomerServiceOutlined />}
+      >
+        <ButtonTable/>
+        <MyButton/>
+      </FloatButton.Group>
     {/* <div ref='map' className="map" /> */}
   </div>
   );

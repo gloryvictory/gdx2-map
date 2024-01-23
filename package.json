@@ -17,14 +17,17 @@
     "react-dom": "^18.2.0",
     "react-map-gl": "^7.1.7",
     "react-scripts": "5.0.1",
+    "rimraf": "^5.0.5",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.5.0"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "rimraf build && react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "clean": "rimraf build"
   },
   "eslintConfig": {
     "extends": [
