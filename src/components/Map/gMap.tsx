@@ -1,4 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react';
+import { nanoid } from 'nanoid'
 // import maplibregl, { AddLayerObject, LayerSpecification, MapOptions, NavigationOptions, VectorSourceSpecification } from 'maplibre-gl';
 // import Map, { Marker } from "react-map-gl/maplibre";
 import Map  from "react-map-gl/maplibre";
@@ -7,13 +8,76 @@ import maplibregl from 'maplibre-gl';
 import type {MapRef} from 'react-map-gl/maplibre';
 import type {LayerProps, SourceProps} from 'react-map-gl';
 import MyButton from '../myButton/myButton';
+import {partial} from "filesize";
 
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './gMap.css';
 import ButtonTable from '../ButtonTable/ButtonTable';
-import { FloatButton } from 'antd';
+import { Drawer, FloatButton, Table } from 'antd';
 import { CustomerServiceOutlined } from '@ant-design/icons';
+import IFile from './types';
+
+
+
+
+
+
+
+let dataSource:IFile[] = []
+//   {
+//     key: '1',
+//     name: 'Mike',
+//     age: 32,
+//     address: '10 Downing Street',
+//   },
+//   {
+//     key: '2',
+//     name: 'John',
+//     age: 42,
+//     address: '10 Downing Street',
+//   },
+// ];
+
+const columns = [
+  {
+    title: 'Имя файла',
+    dataIndex: 'f_name',
+    key: 'f_name',
+  },
+  {
+    title: 'Размер',
+    dataIndex: 'f_size',
+    key: 'f_size',
+  },
+  {
+    title: 'Расширение',
+    dataIndex: 'f_ext',
+    key: 'f_ext',
+  },
+  {
+    title: 'Площадь',
+    dataIndex: 'areaoil',
+    key: 'areaoil',
+  },
+  {
+    title: 'Скважина',
+    dataIndex: 'well',
+    key: 'well',
+  },
+  {
+    title: 'Месторождение',
+    dataIndex: 'field',
+    key: 'field',
+  },
+  {
+    title: 'Полный путь',
+    dataIndex: 'f_path',
+    key: 'f_path',
+  },
+];
+
+
 
 
 export const pointSource: SourceProps = {
@@ -41,7 +105,7 @@ export const pointLayer: LayerProps = {
   "source-layer": "gdx2.file",
   paint: {
     'circle-color': 'blue',
-    'circle-radius': 5
+    'circle-radius': 4
   }
 };
 
@@ -63,17 +127,23 @@ export default function GlobalMap() {
 
   const mapRef = useRef<MapRef| null>(null); 
   const [showPopup, setShowPopup] = useState<boolean>(true);
+  const [showTable, setShowTable] = useState<boolean>(false);
   const markerRef = useRef<maplibregl.Marker>();
   const marker_table_info = new maplibregl.Marker()
   // const mapRef = React.useRef<MapRef | null>(null)
-  
+  const size = partial({standard: "jedec"});
+
+
+  const onTableClose = () => {
+    setShowTable(false);
+  };
+
+
   const onMapLoad = useCallback(() => {
     if (mapRef) {
       const map = mapRef.current
       console.log(map)
 
-      // map?.flyTo({center: [-122.4, 37.8]});
-      
       const popup = new maplibregl.Popup({
         closeButton: true,
         closeOnClick: false,
@@ -86,13 +156,15 @@ export default function GlobalMap() {
         offset: 45
       });
 
+
+
       map?.on('mouseenter', 'points-file', function (e) {
         map.getCanvas().style.cursor = 'pointer';
       
       const features = e?.features
       // console.log(`features.length : ${features?.length}`)
       if(features && features?.length){
-        console.log(features)
+        // console.log(features)
         const lat = features[0]?.properties.lat
         const lon = features[0]?.properties.lon
         // console.log(lat)
@@ -123,7 +195,29 @@ export default function GlobalMap() {
         if(features && features?.length){
           popup_table_info.setLngLat(e.lngLat.wrap()).setHTML(`<h1>"Файлов": ${features?.length}</h1>`).addTo(map.getMap());
           marker_table_info.setLngLat(e.lngLat.wrap()).addTo(map.getMap()); // add the marker to the map;
-          
+          dataSource = []
+          features.map(
+            (feature)=>{
+              const newfile:IFile =  {
+                key: nanoid(5),
+                f_name: feature.properties.f_name,
+                f_size: size( feature.properties.f_size ),
+                f_ext: feature.properties.f_ext,
+                areaoil: feature.properties.areaoil,
+                well: feature.properties.well,
+                field:  feature.properties.field,
+                f_path:  feature.properties.f_path,
+
+              }
+              dataSource.push(newfile) 
+
+            }
+          );
+          setShowTable(true)
+
+          // 
+          // dataSource.sort()
+
         }
       });
     }
@@ -149,7 +243,10 @@ export default function GlobalMap() {
 //   popup.setLngLat(coordinates).setHTML(description).addTo(map);
 // });
 
-
+const containerStyle: React.CSSProperties = {
+  // height: 200,
+  padding: 0,
+};
 
   return (
   
@@ -194,6 +291,24 @@ export default function GlobalMap() {
         <ButtonTable/>
         <MyButton/>
       </FloatButton.Group>
+
+          <Drawer
+            title="Информация"
+            
+            // styles={{padding: 0}}
+            // style={{padding: 0}}
+            // rootStyle={{padding: 0}}
+            placement={'bottom'}
+            closable={true}
+            onClose={onTableClose}
+            open={showTable}
+            size={'default'}
+            key={'bottom'}
+          >
+            <Table dataSource={dataSource} columns={columns} bordered pagination={{ pageSize: 50 }} scroll={{ y: 240 }} style={{ marginTop: 0 , top:0}}/>;
+
+          </Drawer>
+
     {/* <div ref='map' className="map" /> */}
   </div>
   );

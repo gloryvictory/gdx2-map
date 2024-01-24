@@ -1,7 +1,6 @@
-import {useMap} from 'react-map-gl/maplibre';
+// import {useMap} from 'react-map-gl/maplibre';
 import { FloatButton } from 'antd';
 import { TableOutlined } from '@ant-design/icons';
-import { useState } from 'react';
 import useAppStore from '../../store/useAppstore';
 
 
@@ -9,18 +8,18 @@ import useAppStore from '../../store/useAppstore';
 export default function ButtonTable() {
   const   isTableInfoChecked = useAppStore((state) => state.isTableInfoChecked);
   const   toggleTableInfoChecked  = useAppStore((state) => state.toggleTableInfoChecked);
-
-    const { mymap } = useMap();
+  // const { mymap } = useMap();
+  // useEffect(() => {
+  // }, []); 
     // const [open, setOpen] = useState(true);
+  
+  const onClick = () => {
+    toggleTableInfoChecked()
+    // console.log(isTableInfoChecked)
+  }
+    // mymap?.flyTo({center: [-122.4, 37.8]});
+  
 
-    const onClick = () => {
-      toggleTableInfoChecked()
-      // setOpen(!open);
-      // mymap?.flyTo({center: [-122.4, 37.8]});
-    };
-    
-
-    
     return (
     <>
       <FloatButton  

@@ -7,7 +7,7 @@ interface IAppStore {
 }
 
 const useAppStore = create<IAppStore>((set) => ({
-  isTableInfoChecked: true,
+  isTableInfoChecked: false,
   toggleTableInfoChecked: () => set((state: { isTableInfoChecked: boolean; }) => ({ isTableInfoChecked: !state.isTableInfoChecked  })),
   // removeAllBears: () => set({ bears: 0 }),
 }))
