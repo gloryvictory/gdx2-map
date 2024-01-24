@@ -63,7 +63,8 @@ export default function GlobalMap() {
 
   const mapRef = useRef<MapRef| null>(null); 
   const [showPopup, setShowPopup] = useState<boolean>(true);
-
+  const markerRef = useRef<maplibregl.Marker>();
+  const marker_table_info = new maplibregl.Marker()
   // const mapRef = React.useRef<MapRef | null>(null)
   
   const onMapLoad = useCallback(() => {
@@ -77,6 +78,12 @@ export default function GlobalMap() {
         closeButton: true,
         closeOnClick: false,
         offset: 15
+      });
+
+      const popup_table_info = new maplibregl.Popup({
+        closeButton: true,
+        closeOnClick: false,
+        offset: 45
       });
 
       map?.on('mouseenter', 'points-file', function (e) {
@@ -111,7 +118,14 @@ export default function GlobalMap() {
         popup.remove();
       })      
 
-
+      map?.on('click', 'points-file', function (e) {
+        const features = e?.features
+        if(features && features?.length){
+          popup_table_info.setLngLat(e.lngLat.wrap()).setHTML(`<h1>"Файлов": ${features?.length}</h1>`).addTo(map.getMap());
+          marker_table_info.setLngLat(e.lngLat.wrap()).addTo(map.getMap()); // add the marker to the map;
+          
+        }
+      });
     }
 
     
