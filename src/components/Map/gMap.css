@@ -6,3 +6,19 @@
     height: calc(100vh - 277px);
 }
 /* calc(100vh - 277px); */
+
+.ant-drawer{
+  padding: 0px;
+}
+
+.ant-drawer .ant-drawer-body {
+  padding: 0px;
+}
+.ant-drawer .ant-drawer-header  {
+  padding: 0px;
+  background-color: cornflowerblue;
+}
+
+.ant-drawer .ant-drawer-content {
+  height: 420px;
+}
