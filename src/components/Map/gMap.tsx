@@ -13,9 +13,12 @@ import {partial} from "filesize";
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './gMap.css';
-import ButtonTable from '../ButtonTable/ButtonTable';
+
 import { Drawer, FloatButton, Table } from 'antd';
 import { CustomerServiceOutlined } from '@ant-design/icons';
+import ButtonTable from '../ButtonTable/ButtonTable';
+import Coords from '../Coords/Coords'
+
 import IFile from './types';
 
 
@@ -25,19 +28,7 @@ import IFile from './types';
 
 
 let dataSource:IFile[] = []
-//   {
-//     key: '1',
-//     name: 'Mike',
-//     age: 32,
-//     address: '10 Downing Street',
-//   },
-//   {
-//     key: '2',
-//     name: 'John',
-//     age: 42,
-//     address: '10 Downing Street',
-//   },
-// ];
+
 
 const columns = [
   {
@@ -73,7 +64,7 @@ const columns = [
   {
     title: 'Полный путь',
     dataIndex: 'f_path',
-    key: 'f_path',
+    key: 'f_path',  
   },
 ];
 
@@ -133,6 +124,9 @@ export default function GlobalMap() {
   // const mapRef = React.useRef<MapRef | null>(null)
   const size = partial({standard: "jedec"});
 
+  const [lng, setLng] = useState<number>(61.86);
+  const [lat, setLat] = useState<number>(74.08);
+  const [zoom, setZoom] = useState<number>(2.0);
 
   const onTableClose = () => {
     setShowTable(false);
@@ -165,8 +159,8 @@ export default function GlobalMap() {
       // console.log(`features.length : ${features?.length}`)
       if(features && features?.length){
         // console.log(features)
-        const lat = features[0]?.properties.lat
-        const lon = features[0]?.properties.lon
+        // const lat = features[0]?.properties.lat
+        // const lon = features[0]?.properties.lon
         // console.log(lat)
         // console.log(lon)
         popup.setLngLat(e.lngLat.wrap()).setHTML(`<h1>Файлов: ${features?.length}</h1>`).addTo(map.getMap());
@@ -176,8 +170,7 @@ export default function GlobalMap() {
     //   const description = e?.features[0]?.properties.description;
     //   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
     //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-    // }
-      
+    // }      
     //   popup.setLngLat(coordinates).setHTML(description).addTo(map.getMap());
     //   // console.log("fit!!!!!!!!")
       console.log(e)
@@ -188,8 +181,19 @@ export default function GlobalMap() {
       map?.on('mouseleave', 'points-file', function (e) {
         map.getCanvas().style.cursor = '';       
         popup.remove();
-      })      
+      })    
+      
 
+      map?.on('mousemove', function (e) {
+        const ll = e.lngLat.wrap()        
+        setLng(  (prev) => parseFloat(ll.lng.toFixed(4)));
+        setLat(  (prev) => parseFloat(ll.lat.toFixed(4)));
+        setZoom( (prev) => parseFloat(map.getZoom().toFixed(2)));
+ 
+      });
+        
+      
+        
       map?.on('click', 'points-file', function (e) {
         const features = e?.features
         if(features && features?.length){
@@ -207,16 +211,12 @@ export default function GlobalMap() {
                 well: feature.properties.well,
                 field:  feature.properties.field,
                 f_path:  feature.properties.f_path,
-
               }
               dataSource.push(newfile) 
 
             }
           );
           setShowTable(true)
-
-          // 
-          // dataSource.sort()
 
         }
       });
@@ -280,6 +280,11 @@ const containerStyle: React.CSSProperties = {
         <NavigationControl  position="top-right" style={{ marginRight: 10 }}/>
         <ScaleControl />
         <AttributionControl customAttribution="vzam" />
+        <Coords lng={lng} lat={lat} zoom={zoom}  /> 
+        {/* <div className="sidebar">
+          Долгота: {lng} | Широта: {lat} | Zoom: {zoom}
+        </div> */}
+
       </Map>    
       
       <FloatButton.Group
