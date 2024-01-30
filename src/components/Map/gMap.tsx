@@ -10,9 +10,18 @@ import type {LayerProps, SourceProps} from 'react-map-gl';
 import MyButton from '../myButton/myButton';
 import {partial} from "filesize";
 
-
+import { LegendOptions, MaplibreLegendControl } from "@watergis/maplibre-gl-legend";
+import '@watergis/maplibre-gl-legend/dist/maplibre-gl-legend.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './gMap.css';
+
+import { MaplibreStyleDefinition, MaplibreStyleSwitcherControl, MaplibreStyleSwitcherOptions } from "maplibre-gl-style-switcher";
+
+
+// import { MapboxStyleSwitcherControl } from "mapbox-gl-style-switcher";
+// import mapboxgl from "mapbox-gl";
+// import "mapbox-gl-style-switcher/styles.css";
+import "maplibre-gl-style-switcher/styles.css"
 
 import { Drawer, FloatButton, Table } from 'antd';
 import { CustomerServiceOutlined } from '@ant-design/icons';
@@ -22,10 +31,32 @@ import Coords from '../Coords/Coords'
 import IFile from './types';
 
 
+const styles: MaplibreStyleDefinition[] = [
+  { 
+      title: "Dark",
+      uri:"https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+  },
+  {
+      title: "Light",
+      uri:"https://tiles.basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+  },
+  {
+      title: "VOYAGER",
+      uri:"	https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
+  },
+];
 
 
-
-
+const options: MaplibreStyleSwitcherOptions = {
+  defaultStyle: "Light",
+  showTitle: true,
+  eventListeners: {
+// return true if you want to stop execution
+//           onOpen: (event: MouseEvent) => boolean;
+//           onSelect: (event: MouseEvent) => boolean;
+//           onChange: (event: MouseEvent, style: string) => boolean;
+  }
+};
 
 let dataSource:IFile[] = []
 
@@ -135,8 +166,36 @@ export default function GlobalMap() {
 
   const onMapLoad = useCallback(() => {
     if (mapRef) {
+
+      const layers = {
+        
+        Points: 'points-file',
+        // 'Solar Generation': 'heatmap_',
+        // Labels: 'points-file',
+      };
+
+     
+
       const map = mapRef.current
       console.log(map)
+
+      // map?.addControl(new MaplibreStyleSwitcherControl());
+      map?.addControl(new MaplibreStyleSwitcherControl(styles, options));
+
+
+      const targets = {
+        'points-file': 'points-file',
+
+      };
+      
+      const legend_option: LegendOptions = {
+        showDefault: false, 
+        showCheckbox: true, 
+        onlyRendered: false,
+        reverseOrder:false,
+      }
+      // add legend control without checkbox, and it will be hide as default
+      map?.addControl(new MaplibreLegendControl(targets, legend_option), 'top-right');
 
       const popup = new maplibregl.Popup({
         closeButton: true,
@@ -261,6 +320,7 @@ const containerStyle: React.CSSProperties = {
         // ref={mapRef} 
         onLoad={onMapLoad}
         onMouseEnter={onMapLoad}
+        
         ref={mapRef}
         // mapStyle={DARK_MAP_STYLE}
       >
@@ -268,22 +328,12 @@ const containerStyle: React.CSSProperties = {
             <Layer {...pointLayer} />
         </Source>  
       
-        {/* {showPopup && (
-        <Popup longitude={74.08} latitude={61.86}
-          anchor="bottom"
-          onClose={() => setShowPopup(false)}>
-          You are here
-        </Popup>)} */}
-
         <FullscreenControl  position="top-right" style={{ marginRight: 10 }} />
         <GeolocateControl   position="top-right" style={{ marginRight: 10 }}/>
         <NavigationControl  position="top-right" style={{ marginRight: 10 }}/>
         <ScaleControl />
         <AttributionControl customAttribution="vzam" />
         <Coords lng={lng} lat={lat} zoom={zoom}  /> 
-        {/* <div className="sidebar">
-          Долгота: {lng} | Широта: {lat} | Zoom: {zoom}
-        </div> */}
 
       </Map>    
       
@@ -299,10 +349,6 @@ const containerStyle: React.CSSProperties = {
 
           <Drawer
             title="Информация"
-            
-            // styles={{padding: 0}}
-            // style={{padding: 0}}
-            // rootStyle={{padding: 0}}
             placement={'bottom'}
             closable={true}
             onClose={onTableClose}
