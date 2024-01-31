@@ -6,8 +6,8 @@ import type {LayerProps, SourceProps} from 'react-map-gl';
 export const fileSource: SourceProps = {
   id:"gdx2.file",
   type:"vector",
-  tiles:["http://r48-vws03.zsniigg.local:7800/gdx2.file/{z}/{x}/{y}.pbf"],
-  // tiles:["http://localhost:7800/gdx2.file/{z}/{x}/{y}.pbf"],
+  // tiles:["http://r48-vws03.zsniigg.local:7800/gdx2.file/{z}/{x}/{y}.pbf"],
+  tiles:["http://localhost:7800/gdx2.file/{z}/{x}/{y}.pbf"],
   minzoom: 0,
   maxzoom: 22,
 }
@@ -28,8 +28,8 @@ export const fileLayer: LayerProps = {
 export const fieldSource: SourceProps = {
   id:"gdx2.field",
   type:"vector",
-  tiles:["http://r48-vws03.zsniigg.local:7800/gdx2.field/{z}/{x}/{y}.pbf"],
-  // tiles:["http://localhost:7800/gdx2.field/{z}/{x}/{y}.pbf"],
+  // tiles:["http://r48-vws03.zsniigg.local:7800/gdx2.field/{z}/{x}/{y}.pbf"],
+  tiles:["http://localhost:7800/gdx2.field/{z}/{x}/{y}.pbf"],
   minzoom: 0,
   maxzoom: 22,
 }
@@ -50,8 +50,8 @@ export const fieldLayer: LayerProps = {
 export const luSource: SourceProps = {
   id:"gdx2.lu",
   type:"vector",
-  tiles:["http://r48-vws03.zsniigg.local:7800/gdx2.lu/{z}/{x}/{y}.pbf"],
-  // tiles:["http://localhost:7800/gdx2.lu/{z}/{x}/{y}.pbf"],
+  // tiles:["http://r48-vws03.zsniigg.local:7800/gdx2.lu/{z}/{x}/{y}.pbf"],
+  tiles:["http://localhost:7800/gdx2.lu/{z}/{x}/{y}.pbf"],
   minzoom: 0,
   maxzoom: 22,
 }

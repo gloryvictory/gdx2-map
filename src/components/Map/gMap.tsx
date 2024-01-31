@@ -3,13 +3,12 @@ import { nanoid } from 'nanoid'
 // import maplibregl, { AddLayerObject, LayerSpecification, MapOptions, NavigationOptions, VectorSourceSpecification } from 'maplibre-gl';
 // import Map, { Marker } from "react-map-gl/maplibre";
 import Map  from "react-map-gl/maplibre";
-import {Source, Layer, FullscreenControl, GeolocateControl, NavigationControl, ScaleControl, AttributionControl} from 'react-map-gl';
+import {Source, Layer, FullscreenControl, GeolocateControl, NavigationControl, ScaleControl, AttributionControl, MapLayerMouseEvent, MapMouseEvent, MapGeoJSONFeature} from 'react-map-gl';
 import maplibregl from 'maplibre-gl';
 import type {MapRef} from 'react-map-gl/maplibre';
 import MyButton from '../myButton/myButton';
 import {partial} from "filesize";
 
-import { LegendOptions, MaplibreLegendControl } from "@watergis/maplibre-gl-legend";
 import '@watergis/maplibre-gl-legend/dist/maplibre-gl-legend.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './gMap.css';
@@ -30,6 +29,7 @@ import Coords from '../Coords/Coords'
 import IFile from './types';
 import { LIGHT_MAP_STYLE, basemaps_options, basemaps_styles } from './basemaps';
 import { fieldLayer, fieldSource, fileLayer, fileSource, luLayer, luSource, lu_labels_Layer } from './layers';
+import { legend } from './legend';
 
 
 let dataSource:IFile[] = []
@@ -74,9 +74,6 @@ const columns = [
 ];
 
 
-
-
-
 const initialValueLocation = {
   latitude: 61.86,
   longitude: 74.08,
@@ -89,13 +86,13 @@ const initialValueLocation = {
 export default function GlobalMap() {
 //   useEffect(() => {
 // }, []);
+  // const [showPopup, setShowPopup] = useState<boolean>(true);
+  // const markerRef = useRef<maplibregl.Marker>();
+  // const mapRef = React.useRef<MapRef | null>(null)
 
   const mapRef = useRef<MapRef| null>(null); 
-  // const [showPopup, setShowPopup] = useState<boolean>(true);
   const [showTable, setShowTable] = useState<boolean>(false);
-  // const markerRef = useRef<maplibregl.Marker>();
   const marker_table_info = new maplibregl.Marker()
-  // const mapRef = React.useRef<MapRef | null>(null)
   const size = partial({standard: "jedec"});
 
   const [lng, setLng] = useState<number>(61.86);
@@ -106,57 +103,28 @@ export default function GlobalMap() {
     setShowTable(false);
   };
 
+  
+  const popup = new maplibregl.Popup({
+    closeButton: true,
+    closeOnClick: false,
+    offset: 15
+  });
 
-  const onMapLoad = useCallback(() => {
+  const popup_table_info = new maplibregl.Popup({
+    closeButton: true,
+    closeOnClick: false,
+    offset: 45
+  });
+
+
+  // const onMapLoad = useCallback(() => {  }, []);
+    const onMapLoad = useCallback(() => {
     if (mapRef) {
 
-      // const layers = {
-        
-      //   Points: 'points-file',
-      //   // 'Solar Generation': 'heatmap_',
-      //   // Labels: 'points-file',
-      // };
-
-     
-
       const map = mapRef.current
-      console.log(map)
-
-      // map?.addControl(new MaplibreStyleSwitcherControl());
+      // console.log(map)
       map?.addControl(new MaplibreStyleSwitcherControl(basemaps_styles, basemaps_options));
-
-
-      const targets = {
-        'points-file': 'Файлы',
-        'field': 'Месторождения',
-        'lu': 'Лицензии',
-
-      };
-      
-      const legend_option: LegendOptions = {
-        showDefault: false, 
-        showCheckbox: true, 
-        onlyRendered: false,
-        reverseOrder:false,
-        title: 'Легенда'
-      }
-      // add legend control without checkbox, and it will be hide as default
-      const legend : MaplibreLegendControl =  new MaplibreLegendControl(targets, legend_option)
       map?.addControl(legend, 'top-right');
-
-      const popup = new maplibregl.Popup({
-        closeButton: true,
-        closeOnClick: false,
-        offset: 15
-      });
-
-      const popup_table_info = new maplibregl.Popup({
-        closeButton: true,
-        closeOnClick: false,
-        offset: 45
-      });
-
-
 
       map?.on('mouseenter', 'points-file', function (e) {
         map.getCanvas().style.cursor = 'pointer';
@@ -164,21 +132,8 @@ export default function GlobalMap() {
       const features = e?.features
       // console.log(`features.length : ${features?.length}`)
       if(features && features?.length){
-        // console.log(features)
-        // const lat = features[0]?.properties.lat
-        // const lon = features[0]?.properties.lon
-        // console.log(lat)
-        // console.log(lon)
-        popup.setLngLat(e.lngLat.wrap()).setHTML(`<h1>Файлов: ${features?.length}</h1>`).addTo(map.getMap());
-
+        popup.setLngLat(e.lngLat.wrap()).setHTML(`<h1>Файлов: ${features?.length}</h1>`).addTo(map.getMap());  
       }
-    //   const coordinates = e?.features[0]?.geometry.coordinates.slice();
-    //   const description = e?.features[0]?.properties.description;
-    //   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-    //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-    // }      
-    //   popup.setLngLat(coordinates).setHTML(description).addTo(map.getMap());
-    //   // console.log("fit!!!!!!!!")
       console.log(e)
         // do something
       });
@@ -190,14 +145,12 @@ export default function GlobalMap() {
       })    
       
 
-      map?.on('mousemove', function (e) {
+      map?.on('mousemove', function (e: MapLayerMouseEvent) {
         const ll = e.lngLat.wrap()        
         setLng(  (prev) => parseFloat(ll.lng.toFixed(4)));
         setLat(  (prev) => parseFloat(ll.lat.toFixed(4)));
         setZoom( (prev) => parseFloat(map.getZoom().toFixed(2)));
- 
       });
-        
       
         
       map?.on('click', 'points-file', function (e) {
@@ -231,28 +184,6 @@ export default function GlobalMap() {
     
   }, []);
 
-  // function space(arg0: number): import("csstype").Property.MarginRight<string | number> | undefined {
-  //   throw new Error('Function not implemented.');
-  // }
-
-// map.on('mouseenter', 'airport-data', function (e) {
-//   // Change the cursor style as a UI indicator.
-//   map.getCanvas().style.cursor = 'pointer';
-//   var coordinates = e.features[0].geometry.coordinates.slice()
-//   var description = "";
-//   for (const [key, value] of Object.entries(e.features[0].properties)) {
-//     description += `${key}: ${value} <br>`;
-//   }
-//   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-//       coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-//   }
-//   popup.setLngLat(coordinates).setHTML(description).addTo(map);
-// });
-
-// const containerStyle: React.CSSProperties = {
-//   // height: 200,
-//   padding: 0,
-// };
 
   return (
   
@@ -266,7 +197,7 @@ export default function GlobalMap() {
         attributionControl={false}
         // ref={mapRef} 
         onLoad={onMapLoad}
-        onMouseEnter={onMapLoad}
+        // onMouseEnter={onMouseEnter}
         
         ref={mapRef}
         // mapStyle={DARK_MAP_STYLE}
@@ -283,9 +214,9 @@ export default function GlobalMap() {
             <Layer {...luLayer} />
         </Source>  
 
-        <Source {...luSource}   >
+        {/* <Source {...luSource}   >
             <Layer {...lu_labels_Layer} />
-        </Source>  
+        </Source>   */}
       
         <FullscreenControl  position="top-right" style={{ marginRight: 10 }} />
         <GeolocateControl   position="top-right" style={{ marginRight: 10 }}/>
