@@ -6,7 +6,6 @@ import Map  from "react-map-gl/maplibre";
 import {Source, Layer, FullscreenControl, GeolocateControl, NavigationControl, ScaleControl, AttributionControl} from 'react-map-gl';
 import maplibregl from 'maplibre-gl';
 import type {MapRef} from 'react-map-gl/maplibre';
-import type {LayerProps, SourceProps} from 'react-map-gl';
 import MyButton from '../myButton/myButton';
 import {partial} from "filesize";
 
@@ -15,7 +14,7 @@ import '@watergis/maplibre-gl-legend/dist/maplibre-gl-legend.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './gMap.css';
 
-import { MaplibreStyleDefinition, MaplibreStyleSwitcherControl, MaplibreStyleSwitcherOptions } from "maplibre-gl-style-switcher";
+import { MaplibreStyleSwitcherControl } from "maplibre-gl-style-switcher";
 
 
 // import { MapboxStyleSwitcherControl } from "mapbox-gl-style-switcher";
@@ -29,34 +28,9 @@ import ButtonTable from '../ButtonTable/ButtonTable';
 import Coords from '../Coords/Coords'
 
 import IFile from './types';
+import { LIGHT_MAP_STYLE, basemaps_options, basemaps_styles } from './basemaps';
+import { fieldLayer, fieldSource, fileLayer, fileSource, luLayer, luSource, lu_labels_Layer } from './layers';
 
-
-const styles: MaplibreStyleDefinition[] = [
-  { 
-      title: "Dark",
-      uri:"https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
-  },
-  {
-      title: "Light",
-      uri:"https://tiles.basemaps.cartocdn.com/gl/positron-gl-style/style.json"
-  },
-  {
-      title: "VOYAGER",
-      uri:"	https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
-  },
-];
-
-
-const options: MaplibreStyleSwitcherOptions = {
-  defaultStyle: "Light",
-  showTitle: true,
-  eventListeners: {
-// return true if you want to stop execution
-//           onOpen: (event: MouseEvent) => boolean;
-//           onSelect: (event: MouseEvent) => boolean;
-//           onChange: (event: MouseEvent, style: string) => boolean;
-  }
-};
 
 let dataSource:IFile[] = []
 
@@ -102,37 +76,6 @@ const columns = [
 
 
 
-export const pointSource: SourceProps = {
-
-  id:"gdx2.file",
-  type:"vector",
-  // tiles:["http://r48-vws03.zsniigg.local:7800/gdx2.file/{z}/{x}/{y}.pbf"],
-  tiles:["http://localhost:7800/gdx2.file/{z}/{x}/{y}.pbf"],
-  minzoom: 0,
-  maxzoom: 22,
-
-          // data="http://localhost:7800/gdx2.file/{z}/{x}/{y}.pbf"
-          // cluster={true}
-          // clusterMaxZoom={14}
-          // clusterRadius={50}
-
-}
-
-
-export const pointLayer: LayerProps = {
-  id: 'points-file',
-  type: 'circle',
-  source: 'gdx2.file',
-  // filter: ['has', 'point_count'],
-  "source-layer": "gdx2.file",
-  paint: {
-    'circle-color': 'blue',
-    'circle-radius': 4
-  }
-};
-
-const LIGHT_MAP_STYLE = 'https://tiles.basemaps.cartocdn.com/gl/positron-gl-style/style.json';
-const DARK_MAP_STYLE = 'https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 
 const initialValueLocation = {
   latitude: 61.86,
@@ -148,9 +91,9 @@ export default function GlobalMap() {
 // }, []);
 
   const mapRef = useRef<MapRef| null>(null); 
-  const [showPopup, setShowPopup] = useState<boolean>(true);
+  // const [showPopup, setShowPopup] = useState<boolean>(true);
   const [showTable, setShowTable] = useState<boolean>(false);
-  const markerRef = useRef<maplibregl.Marker>();
+  // const markerRef = useRef<maplibregl.Marker>();
   const marker_table_info = new maplibregl.Marker()
   // const mapRef = React.useRef<MapRef | null>(null)
   const size = partial({standard: "jedec"});
@@ -167,12 +110,12 @@ export default function GlobalMap() {
   const onMapLoad = useCallback(() => {
     if (mapRef) {
 
-      const layers = {
+      // const layers = {
         
-        Points: 'points-file',
-        // 'Solar Generation': 'heatmap_',
-        // Labels: 'points-file',
-      };
+      //   Points: 'points-file',
+      //   // 'Solar Generation': 'heatmap_',
+      //   // Labels: 'points-file',
+      // };
 
      
 
@@ -180,11 +123,13 @@ export default function GlobalMap() {
       console.log(map)
 
       // map?.addControl(new MaplibreStyleSwitcherControl());
-      map?.addControl(new MaplibreStyleSwitcherControl(styles, options));
+      map?.addControl(new MaplibreStyleSwitcherControl(basemaps_styles, basemaps_options));
 
 
       const targets = {
-        'points-file': 'points-file',
+        'points-file': 'Файлы',
+        'field': 'Месторождения',
+        'lu': 'Лицензии',
 
       };
       
@@ -193,9 +138,11 @@ export default function GlobalMap() {
         showCheckbox: true, 
         onlyRendered: false,
         reverseOrder:false,
+        title: 'Легенда'
       }
       // add legend control without checkbox, and it will be hide as default
-      map?.addControl(new MaplibreLegendControl(targets, legend_option), 'top-right');
+      const legend : MaplibreLegendControl =  new MaplibreLegendControl(targets, legend_option)
+      map?.addControl(legend, 'top-right');
 
       const popup = new maplibregl.Popup({
         closeButton: true,
@@ -284,9 +231,9 @@ export default function GlobalMap() {
     
   }, []);
 
-  function space(arg0: number): import("csstype").Property.MarginRight<string | number> | undefined {
-    throw new Error('Function not implemented.');
-  }
+  // function space(arg0: number): import("csstype").Property.MarginRight<string | number> | undefined {
+  //   throw new Error('Function not implemented.');
+  // }
 
 // map.on('mouseenter', 'airport-data', function (e) {
 //   // Change the cursor style as a UI indicator.
@@ -302,10 +249,10 @@ export default function GlobalMap() {
 //   popup.setLngLat(coordinates).setHTML(description).addTo(map);
 // });
 
-const containerStyle: React.CSSProperties = {
-  // height: 200,
-  padding: 0,
-};
+// const containerStyle: React.CSSProperties = {
+//   // height: 200,
+//   padding: 0,
+// };
 
   return (
   
@@ -324,8 +271,20 @@ const containerStyle: React.CSSProperties = {
         ref={mapRef}
         // mapStyle={DARK_MAP_STYLE}
       >
-        <Source {...pointSource}   >
-            <Layer {...pointLayer} />
+        <Source {...fileSource}   >
+            <Layer {...fileLayer} />
+        </Source>  
+
+        <Source {...fieldSource}   >
+            <Layer {...fieldLayer} />
+        </Source>  
+
+        <Source {...luSource}   >
+            <Layer {...luLayer} />
+        </Source>  
+
+        <Source {...luSource}   >
+            <Layer {...lu_labels_Layer} />
         </Source>  
       
         <FullscreenControl  position="top-right" style={{ marginRight: 10 }} />
